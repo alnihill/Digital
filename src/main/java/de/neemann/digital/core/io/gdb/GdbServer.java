@@ -5,6 +5,10 @@
 
 package de.neemann.digital.core.io.gdb;
 
+import de.neemann.digital.core.Model;
+import de.neemann.digital.core.ModelEvent;
+import de.neemann.digital.core.ModelEventType;
+import de.neemann.digital.core.ModelStateObserverTyped;
 import de.neemann.digital.core.Node;
 import de.neemann.digital.core.NodeException;
 import de.neemann.digital.core.ObservableValue;
@@ -29,7 +33,7 @@ import static de.neemann.digital.core.element.PinInfo.input;
  * Sits in the schematic and toggles single-bit pins based on ASCII
  * characters received from OpenOCD. Automatically launches OpenOCD.
  */
-public class GdbServer extends Node implements Element {
+public class GdbServer extends Node implements Element, ModelStateObserverTyped {
 
     /**
      * The description of the GdbServer element.
@@ -61,6 +65,7 @@ public class GdbServer extends Node implements Element {
     private volatile Socket activeClient;
     private Thread serverThread;
     private Process openocdProcess;
+    private volatile boolean shuttingDown = false;
 
     /**
      * Creates a new GdbServer component.
@@ -90,6 +95,23 @@ public class GdbServer extends Node implements Element {
     }
 
     @Override
+    public void init(Model model) throws NodeException {
+        // Register so the framework tells us when the simulation is stopped/closed
+        model.addObserver(this);
+    }
+
+    @Override
+    public ModelEventType[] getEvents() {
+        return new ModelEventType[]{ModelEventType.CLOSED};
+    }
+
+    @Override
+    public void handleEvent(ModelEvent event) {
+        if (event.getType() == ModelEventType.CLOSED)
+            close();
+    }
+
+    @Override
     public ObservableValues getOutputs() {
         return new ObservableValues(tckOut, tmsOut, tdiOut);
     }
@@ -98,24 +120,42 @@ public class GdbServer extends Node implements Element {
      * Closes the component, shutting down OpenOCD and the server socket.
      */
     public void close() {
+        shuttingDown = true;
+
         if (openocdProcess != null) {
             openocdProcess.destroy();
-        }
-        if (serverSocket != null) {
             try {
-                serverSocket.close();
-            } catch (IOException ignored) {
+                if (!openocdProcess.waitFor(1, TimeUnit.SECONDS)) {
+                    openocdProcess.destroyForcibly();
+                    openocdProcess.waitFor(1, TimeUnit.SECONDS);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                openocdProcess.destroyForcibly();
             }
         }
+
         if (activeClient != null) {
             try {
                 activeClient.close();
             } catch (IOException ignored) {
             }
         }
+
+        if (serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException ignored) {
+            }
+        }
+
         if (serverThread != null) {
             serverThread.interrupt();
         }
+
+        // Unblock any thread stuck waiting on the queues so it can exit cleanly
+        pendingState.offer(new PinState(false, false, false));
+        completedState.offer(true);
     }
 
     @Override
@@ -228,13 +268,25 @@ public class GdbServer extends Node implements Element {
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
+                    if (shuttingDown || (serverSocket != null && serverSocket.isClosed())) {
+                        // Expected: we closed the socket ourselves during shutdown
+                        break;
+                    }
                     System.err.println("GdbServer: Client disconnected or error.");
                 } finally {
-                    if (activeClient != null) activeClient.close();
+                    if (activeClient != null) {
+                        try {
+                            activeClient.close();
+                        } catch (IOException ignored) {
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (!shuttingDown)
+                e.printStackTrace();
+        } finally {
+            System.out.println("GdbServer: Server thread exiting.");
         }
     }
 
