@@ -241,6 +241,15 @@ In the file howTo.md you can find more details about translations.
     </string>
     <string name="elem_Terminal_pin_D">The data to write to the terminal</string>
     <string name="elem_Terminal_pin_en">A high at this input enables the clock input.</string>
+
+    <string name="elem_Gdb">GDB Server</string>
+    <string name="elem_Gdb_tt">Exposes a GDB remote serial protocol server, allowing an external debugger to
+        connect to the simulation via JTAG. The four JTAG signals (TCK, TMS, TDI, TDO) must be
+        wired to the corresponding pins of the target component, e.g. a CPU core.</string>
+    <string name="elem_Gdb_pin_TCK">JTAG test clock. Clocks the JTAG state machine on every rising edge.</string>
+    <string name="elem_Gdb_pin_TMS">JTAG test mode select. Controls the transitions of the JTAG state machine.</string>
+    <string name="elem_Gdb_pin_TDI">JTAG test data input. Serial data shifted into the target on the rising clock edge.</string>
+    <string name="elem_Gdb_pin_TDO">JTAG test data output. Serial data shifted out of the target on the falling clock edge.</string>
     <string name="elem_MIDI">MIDI</string>
     <string name="elem_MIDI_tt">Uses the MIDI system to play notes.</string>
     <string name="elem_MIDI_pin_N">Note</string>

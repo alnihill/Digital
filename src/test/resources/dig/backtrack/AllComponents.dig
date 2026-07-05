@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <circuit>
-  <version>1</version>
+  <version>2</version>
   <attributes/>
   <visualElements>
     <visualElement>
@@ -171,6 +171,16 @@
       <elementName>Terminal</elementName>
       <elementAttributes/>
       <pos x="420" y="920"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Gdb</elementName>
+      <elementAttributes/>
+      <pos x="420" y="1240"/>
+    </visualElement>
+    <visualElement>
+      <elementName>GdbJtag</elementName>
+      <elementAttributes/>
+      <pos x="420" y="1280"/>
     </visualElement>
     <visualElement>
       <elementName>VDD</elementName>
@@ -1271,6 +1281,10 @@
       <p2 x="1160" y="600"/>
     </wire>
     <wire>
+      <p1 x="400" y="1240"/>
+      <p2 x="420" y="1240"/>
+    </wire>
+    <wire>
       <p1 x="400" y="860"/>
       <p2 x="420" y="860"/>
     </wire>
@@ -1781,6 +1795,10 @@
     <wire>
       <p1 x="400" y="1160"/>
       <p2 x="400" y="1180"/>
+    </wire>
+    <wire>
+      <p1 x="400" y="1180"/>
+      <p2 x="400" y="1240"/>
     </wire>
     <wire>
       <p1 x="400" y="220"/>

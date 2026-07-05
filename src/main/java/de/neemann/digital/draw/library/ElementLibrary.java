@@ -35,6 +35,8 @@ import de.neemann.digital.gui.components.graphics.LedMatrix;
 import de.neemann.digital.gui.components.graphics.VGA;
 import de.neemann.digital.gui.components.terminal.Keyboard;
 import de.neemann.digital.gui.components.terminal.Terminal;
+import de.neemann.digital.gui.components.gdb.Gdb;
+import de.neemann.digital.gui.components.gdb.GdbJtag;
 import de.neemann.digital.lang.Lang;
 import de.neemann.digital.testing.TestCaseElement;
 import org.slf4j.Logger;
@@ -151,6 +153,8 @@ public class ElementLibrary implements Iterable<ElementLibrary.ElementContainer>
                         .add(new LibraryNode(Lang.get("lib_peripherals"))
                                 .add(Keyboard.DESCRIPTION)
                                 .add(Terminal.DESCRIPTION)
+                                .add(Gdb.DESCRIPTION)
+                                .add(GdbJtag.DESCRIPTION)
                                 .add(Telnet.DESCRIPTION)
                                 .add(VGA.DESCRIPTION)
                                 .add(MIDI.DESCRIPTION)
