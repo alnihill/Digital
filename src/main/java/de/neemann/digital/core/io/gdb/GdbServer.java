@@ -3,7 +3,7 @@
  * that can be found in the LICENSE file.
  */
 
-package de.neemann.digital.gui.components.gdb;
+package de.neemann.digital.core.io.gdb;
 
 import de.neemann.digital.core.Node;
 import de.neemann.digital.core.NodeException;
@@ -29,13 +29,13 @@ import static de.neemann.digital.core.element.PinInfo.input;
  * Sits in the schematic and toggles single-bit pins based on ASCII
  * characters received from OpenOCD. Automatically launches OpenOCD.
  */
-public class GdbJtag extends Node implements Element {
+public class GdbServer extends Node implements Element {
 
     /**
-     * The description of the GdbJtag element.
+     * The description of the GdbServer element.
      */
     public static final ElementTypeDescription DESCRIPTION
-            = new ElementTypeDescription(GdbJtag.class, input("TDO"), input("C").setClock())
+            = new ElementTypeDescription(GdbServer.class, input("TDO"), input("C").setClock())
             .addAttribute(Keys.ROTATE)
             .addAttribute(Keys.LABEL);
 
@@ -63,11 +63,12 @@ public class GdbJtag extends Node implements Element {
     private Process openocdProcess;
 
     /**
-     * Creates a new GdbJtag component.
+     * Creates a new GdbServer component.
      *
      * @param attributes the attributes of this element
      */
-    public GdbJtag(ElementAttributes attributes) {
+    public GdbServer(ElementAttributes attributes) {
+        super(true);
         tckOut = new ObservableValue("TCK", 1).setPinDescription(DESCRIPTION);
         tmsOut = new ObservableValue("TMS", 1).setPinDescription(DESCRIPTION);
         tdiOut = new ObservableValue("TDI", 1).setPinDescription(DESCRIPTION);
@@ -81,7 +82,7 @@ public class GdbJtag extends Node implements Element {
         if (serverThread == null) {
             serverThread = new Thread(this::runServer);
             serverThread.setDaemon(true);
-            serverThread.setName("GdbJtag-Server");
+            serverThread.setName("GdbServer-Server");
             serverThread.start();
 
             startOpenOCD();
@@ -127,7 +128,7 @@ public class GdbJtag extends Node implements Element {
                 try {
                     // Use timeout to prevent dropping tokens if threads desync
                     if (!completedState.offer(true, 100, TimeUnit.MILLISECONDS)) {
-                        System.err.println("GdbJtag: server thread not consuming completed states");
+                        System.err.println("GdbServer: server thread not consuming completed states");
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -176,21 +177,21 @@ public class GdbJtag extends Node implements Element {
             pb.inheritIO();
 
             openocdProcess = pb.start();
-            System.out.println("GdbJtag: Launched OpenOCD child process with inline RISC-V config.");
+            System.out.println("GdbServer: Launched OpenOCD child process with inline RISC-V config.");
         } catch (IOException e) {
-            System.err.println("GdbJtag: Failed to start OpenOCD: " + e.getMessage());
+            System.err.println("GdbServer: Failed to start OpenOCD: " + e.getMessage());
         }
     }
 
     private void runServer() {
         try {
             serverSocket = new ServerSocket(9824);
-            System.out.println("GdbJtag: Listening on port 9824...");
+            System.out.println("GdbServer: Listening on port 9824...");
 
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     activeClient = serverSocket.accept();
-                    System.out.println("GdbJtag: OpenOCD connected.");
+                    System.out.println("GdbServer: OpenOCD connected.");
 
                     InputStream in = activeClient.getInputStream();
                     OutputStream out = activeClient.getOutputStream();
@@ -219,7 +220,7 @@ public class GdbJtag extends Node implements Element {
                                 out.flush();
                                 break;
                             case 'Q':
-                                System.out.println("GdbJtag: Quit request.");
+                                System.out.println("GdbServer: Quit request.");
                                 return;
                         }
                     }
@@ -227,7 +228,7 @@ public class GdbJtag extends Node implements Element {
                     Thread.currentThread().interrupt();
                     break;
                 } catch (Exception e) {
-                    System.err.println("GdbJtag: Client disconnected or error.");
+                    System.err.println("GdbServer: Client disconnected or error.");
                 } finally {
                     if (activeClient != null) activeClient.close();
                 }

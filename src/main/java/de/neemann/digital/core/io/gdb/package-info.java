@@ -7,4 +7,4 @@
 /**
  * Classes to host a gdb server
  */
-package de.neemann.digital.gui.components.gdb;
+package de.neemann.digital.core.io.gdb;

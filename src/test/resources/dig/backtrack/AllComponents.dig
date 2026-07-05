@@ -173,16 +173,6 @@
       <pos x="420" y="920"/>
     </visualElement>
     <visualElement>
-      <elementName>Gdb</elementName>
-      <elementAttributes/>
-      <pos x="420" y="1240"/>
-    </visualElement>
-    <visualElement>
-      <elementName>GdbJtag</elementName>
-      <elementAttributes/>
-      <pos x="420" y="1280"/>
-    </visualElement>
-    <visualElement>
       <elementName>VDD</elementName>
       <elementAttributes/>
       <pos x="120" y="720"/>

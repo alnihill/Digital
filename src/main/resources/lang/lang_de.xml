@@ -280,14 +280,15 @@
     </string>
     <string name="elem_Terminal_pin_en">Ein High an diesem Eingang aktiviert den Takteingang.</string>
 
-    <string name="elem_Gdb">GDB-Server</string>
-    <string name="elem_Gdb_tt">Stellt einen GDB-Remote-Serial-Protocol-Server bereit, über den ein externer Debugger
+    <string name="elem_GdbServer">GDB Server</string>
+    <string name="elem_GdbServer_tt">Stellt einen GDB-Remote-Serial-Protocol-Server bereit, über den ein externer Debugger
         per JTAG eine Verbindung zur Simulation aufbauen kann. Die vier JTAG-Signale (TCK, TMS, TDI, TDO)
         müssen mit den entsprechenden Pins der Zielkomponente, z. B. eines CPU-Kerns, verbunden werden.</string>
-    <string name="elem_Gdb_pin_TCK">JTAG-Taktsignal. Taktet die JTAG-Zustandsmaschine bei jeder steigenden Flanke.</string>
-    <string name="elem_Gdb_pin_TMS">JTAG-Testmodusauswahl. Steuert die Zustandsübergänge der JTAG-Zustandsmaschine.</string>
-    <string name="elem_Gdb_pin_TDI">JTAG-Dateneingabe. Serielle Daten, die bei der steigenden Taktflanke in das Ziel eingeschoben werden.</string>
-    <string name="elem_Gdb_pin_TDO">JTAG-Datenausgabe. Serielle Daten, die bei der fallenden Taktflanke aus dem Ziel herausgeschoben werden.</string>
+    <string name="elem_GdbServer_pin_TCK">JTAG-Taktsignal. Taktet die JTAG-Zustandsmaschine bei jeder steigenden Flanke.</string>
+    <string name="elem_GdbServer_pin_TMS">JTAG-Testmodusauswahl. Steuert die Zustandsübergänge der JTAG-Zustandsmaschine.</string>
+    <string name="elem_GdbServer_pin_TDI">JTAG-Dateneingabe. Serielle Daten, die bei der steigenden Taktflanke in das Ziel eingeschoben werden.</string>
+    <string name="elem_GdbServer_pin_TDO">JTAG-Datenausgabe. Serielle Daten, die bei der fallenden Taktflanke aus dem Ziel herausgeschoben werden.</string>
+    <string name="elem_GdbServer_pin_C">Takteingang.</string>
 
     <string name="elem_Telnet">Telnet</string>
     <string name="elem_Telnet_tt">Erlaubt eine Telnet-Verbindung zur Schaltung.
